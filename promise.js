@@ -43,8 +43,12 @@ class MyPromise {
           resolve(res);
         };
         this.rejectFn = () => {
-          const res = handleRejected(this.res);
-          reject(err);
+          if (handleRejected) {
+            const res = handleRejected(this.res);
+            reject(res);
+          } else {
+            reject(this.res);
+          }
         };
       });
     }
@@ -67,6 +71,34 @@ class MyPromise {
     // });
   }
 }
+
+const myPromise = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    reject('err1');
+  }, 500);
+});
+
+myPromise
+  .then(
+    (value) => {
+      console.log(value);
+      return 'bar';
+    },
+    (err) => {
+      console.log(err);
+      return 'err2';
+    }
+  )
+  .then(
+    (value) => {
+      console.log('resolve 2');
+      console.log(value);
+    },
+    (err) => {
+      console.log('reject 2');
+      console.log(err);
+    }
+  );
 
 // const myPromise = new MyPromise((resolve, reject) => {
 //   setTimeout(() => {

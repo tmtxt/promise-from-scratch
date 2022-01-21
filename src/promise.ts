@@ -30,9 +30,27 @@ export default class MyPromise {
   }
 
   then(handleResolved: HandleResolvedFn, handleRejected?: HandleRejectedFn) {
-    // don't call these handleResolved and handleRejected function here
-    // defer them until the promise is resolved or rejected
-    this.handleResolved = handleResolved;
-    this.handleRejected = handleRejected;
+    return new MyPromise((resolve, reject) => {
+      this.handleResolved = (outerRes) => {
+        try {
+          const innerRes = handleResolved(outerRes);
+          resolve(innerRes);
+        } catch (e) {
+          reject(e);
+        }
+      };
+      this.handleRejected = (outerErr) => {
+        try {
+          if (handleRejected) {
+            const innerErr = handleRejected(outerErr);
+            reject(innerErr);
+          } else {
+            reject(outerErr);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      };
+    });
   }
 }
