@@ -34,17 +34,51 @@ class MyPromise {
   }
 
   then(handleResolved, handleRejected) {
-    this.resolveFn = handleResolved;
-    this.rejectFn = handleRejected;
+    // this.resolveFn = handleResolved;
+    // this.rejectFn = handleRejected;
+    if (this.status === 'init') {
+      return new MyPromise((resolve, reject) => {
+        this.resolveFn = () => {
+          const res = handleResolved(this.res);
+          resolve(res);
+        };
+        this.rejectFn = () => {
+          const res = handleRejected(this.res);
+          reject(err);
+        };
+      });
+    }
+
+    // return new MyPromise((resolve, reject) => {
+    //   if (this.status === 'init') {
+    //     this.resolveFn = () => {
+    //       try {
+    //         const res = handleResolved(this.res);
+    //         resolve(res);
+    //       } catch (e) {
+    //         reject(e);
+    //       }
+    //     };
+    //     this.rejectFn = () => {};
+    //   }
+
+    //   if (this.status === 'resolved') {
+    //   }
+    // });
   }
 }
 
-const myPromise = new MyPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('foo');
-  }, 500);
-});
+// const myPromise = new MyPromise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve('foo');
+//   }, 500);
+// });
 
-myPromise.then((value) => {
-  console.log(value);
-});
+// myPromise
+//   .then((value) => {
+//     console.log(value);
+//     return 'bar';
+//   })
+//   .then((value) => {
+//     console.log(value);
+//   });
