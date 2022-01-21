@@ -8,21 +8,18 @@ export default class MyPromise {
   private status: 'init' | 'resolved' | 'rejected' = 'init';
   private handleResolved: HandleResolvedFn;
   private handleRejected: HandleRejectedFn;
-  private result: any;
 
   constructor(execute: PromiseExecuteFn) {
     const resolve: ResolveFn = (res) => {
       if (this.status !== 'init') return; // only resolve/reject once
 
       this.status = 'resolved';
-      this.result = res;
-      this.handleResolved && this.handleResolved(this.result);
+      this.handleResolved && this.handleResolved(res);
     };
     const reject: RejectFn = (err) => {
       if (this.status !== 'init') return; // only resolve/reject once
       this.status = 'rejected';
-      this.result = err;
-      this.handleRejected && this.handleRejected(this.result);
+      this.handleRejected && this.handleRejected(err);
     };
 
     try {
